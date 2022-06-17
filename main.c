@@ -1,27 +1,12 @@
 /* 
- * LibPSn00b Example Programs
- *
- * Balls Example
- * 2019 - 2021 Meido-Tek Productions / PSn00bSDK Project
- *
- * Draws a bunch of ball sprites that bounce around the screen,
- * along with a ball snake that might be difficult to see.
- *
- *
- * Example by Lameguy64
- *
- * Changelog:
- *
- *	May 10, 2021		- Variable types updated for psxgpu.h changes.
- *
- *  November 20, 2018	- Initial version.
- *
+This is PS1MiniPadTest. A a small sized Pad Tester
+for the original Play Station and PSOne. Smallenough
+to fit inside a Memory Card and use it with FreePSXBoot.
  */
  
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <psxetc.h>
 #include <psxgte.h>
 #include <psxgpu.h>
 #include <psxpad.h>
@@ -29,6 +14,8 @@
 
 
 #define OT_LEN 		8
+
+// Geometry of the display
 
 #define SCREEN_XRES	320
 #define SCREEN_YRES	240
@@ -59,6 +46,8 @@
 #define COLOR_PS_NEUTRAL	0xF0F0F0
 #define COLOR_PUSHED		0xFFFF00
 
+// Button pushes
+
 #define PAD_NONE	0xFFFF
 
 /* Display and drawing environments */
@@ -70,9 +59,7 @@ u_long	ot[2][OT_LEN];			/* Ordering tables */
 char	*nextpri;				/* Pointer to next packet buffer offset */
 int		db = 0;					/* Double buffer index */
 
-
-
-/* TIM image parameters for loading the ball texture and drawing sprites */
+// TIM image parameters for loading the ball texture and drawing sprites
 extern u_int buttons_tim[];
 TIM_IMAGE buttons_image;
 
@@ -81,15 +68,15 @@ char pad_buff[2][34];
 
 // Hold sprites info
 typedef struct _SPRITE {
-    u_short tpage; // Tpage value
-    u_short clut; // CLUT value
-	u_int x,y; // Relative coordinates
-    u_char u,v; // UV offset
+    u_short tpage;	// Tpage value
+    u_short clut;	// CLUT value
+	u_int x,y;		// Relative coordinates
+    u_char u,v;		// UV offset
     CVECTOR col;
 	int PAD;
 } SPRITE;
 
-// Hold the ID's for the fonts
+// Hold the ID's for the fonts displays
 int font_id[2];
 
 void GetSprite(TIM_IMAGE *tim, SPRITE *sprite,int PAD, uint32_t color, int u, int v, int x, int y) {
@@ -119,9 +106,6 @@ void GetSprite(TIM_IMAGE *tim, SPRITE *sprite,int PAD, uint32_t color, int u, in
 }
 
 char *SortSprite(u_int PORT,uint16_t btn, SPRT_16 *sprt,DR_TPAGE *tpage, u_long *ot, char *pri, SPRITE *sprite) {
-    // SPRT_16 *sprt;
-    // DR_TPAGE *tpage;
-
     sprt = (SPRT_16*)pri;               // initialize the sprite
     setSprt16(sprt);
 
@@ -134,7 +118,6 @@ char *SortSprite(u_int PORT,uint16_t btn, SPRT_16 *sprt,DR_TPAGE *tpage, u_long 
     sprt->clut = sprite->clut;          // Set the CLUT value
 
     addPrim(ot, sprt);                  // Sort the primitive and advance
-    // pri += sizeof(SPRT);
     sprt++;
 	pri = (char*)sprt;
     
@@ -146,9 +129,6 @@ char *SortSprite(u_int PORT,uint16_t btn, SPRT_16 *sprt,DR_TPAGE *tpage, u_long 
 }                                       // (set to nextpri)
 
 char *SortSprite32(u_int PORT,uint16_t btn, SPRT *sprt,DR_TPAGE *tpage, u_long *ot, char *pri, SPRITE *sprite) {
-    // SPRT_16 *sprt;
-    // DR_TPAGE *tpage;
-
     sprt = (SPRT*)pri;               // initialize the sprite
     setSprt(sprt);
 
@@ -162,7 +142,6 @@ char *SortSprite32(u_int PORT,uint16_t btn, SPRT *sprt,DR_TPAGE *tpage, u_long *
     sprt->clut = sprite->clut;          // Set the CLUT value
 
     addPrim(ot, sprt);                  // Sort the primitive and advance
-    // pri += sizeof(SPRT);
     sprt++;
 	pri = (char*)sprt;
     
@@ -174,9 +153,6 @@ char *SortSprite32(u_int PORT,uint16_t btn, SPRT *sprt,DR_TPAGE *tpage, u_long *
 }                                       // (set to nextpri)
 
 char *SortSpriteMoving(uint8_t mov_x, uint8_t mov_y,u_int PORT, SPRT_16 *sprt,DR_TPAGE *tpage, u_long *ot, char *pri, SPRITE *sprite) {
-    // SPRT_16 *sprt;
-    // DR_TPAGE *tpage;
-
     sprt = (SPRT_16*)pri;               // initialize the sprite
     setSprt16(sprt);
 
@@ -189,7 +165,6 @@ char *SortSpriteMoving(uint8_t mov_x, uint8_t mov_y,u_int PORT, SPRT_16 *sprt,DR
     sprt->clut = sprite->clut;          // Set the CLUT value
 
     addPrim(ot, sprt);                  // Sort the primitive and advance
-    // pri += sizeof(SPRT);
     sprt++;
 	pri = (char*)sprt;
     
@@ -202,8 +177,6 @@ char *SortSpriteMoving(uint8_t mov_x, uint8_t mov_y,u_int PORT, SPRT_16 *sprt,DR
 
 void init() {
 	
-	int i;
-	
 	/* Reset GPU (also installs event handler for VSync) */
 	printf("Init GPU... ");
 	ResetGraph( 0 );
@@ -215,7 +188,7 @@ void init() {
 	/* Set display and draw environment parameters */
 	SetDefDispEnv( &disp, 0, 0, SCREEN_XRES, SCREEN_YRES );
 	SetDefDrawEnv( &draw, 0, 0, SCREEN_XRES, SCREEN_YRES );
-	disp.isinter = 0; /* Enable interlace (required for hires) */
+	// disp.isinter = 0; /* Not enable interlace (required for hires) */
 	
 	/* Set clear color, area clear and dither processing */
 	setRGB0( &draw, COLORBG_R, COLORBG_G, COLORBG_B );
@@ -232,7 +205,7 @@ void init() {
 	printf("Done.\n");
 	
 	
-	/* Upload the ball texture */
+	/* Upload the textures */
 	printf("Upload texture... ");
 	
 	GetTimInfo( (u_long*)buttons_tim, &buttons_image ); /* Get TIM parameters */
@@ -248,6 +221,7 @@ void init() {
 	StartPAD();
 	ChangeClearPAD(0);
 	
+	// Load font and set two font displays
 	FntLoad(960, 0);
 	font_id[0] = FntOpen(12, 20, 128, 128, 0, 80);
 	font_id[1] = FntOpen(12, PORT_OFFSET+20, 128, 128, 0, 80);
@@ -258,7 +232,6 @@ void init() {
 
 int main(int argc, const char* argv[]) {
 	
-	// SPRT_16 *sprt;
 	DR_TPAGE *tpage;
 	
 	SPRT_16 *sprt_up;
@@ -320,10 +293,6 @@ int main(int argc, const char* argv[]) {
 	SPRITE bg_L;
 
    	PADTYPE	*pad;
-
-	
-	int i,counter=0;
-	
 	
 	/* Init graphics and stuff before doing anything else */
 	init();
@@ -378,7 +347,6 @@ int main(int argc, const char* argv[]) {
 
 
 			if (! pad->stat & (pad->type==PAD_ID_DIGITAL | pad->type==PAD_ID_ANALOG | pad->type==PAD_ID_ANALOG_STICK)) {
-			// FntPrint(font_id[port], "%d",pad->type);
 				nextpri = SortSprite(port, pad->btn, sprt_up,    tpage, ot[db] + (OT_LEN - 1), nextpri, &up);
 				nextpri = SortSprite(port, pad->btn, sprt_right, tpage, ot[db] + (OT_LEN - 1), nextpri, &right);
 				nextpri = SortSprite(port, pad->btn, sprt_down,  tpage, ot[db] + (OT_LEN - 1), nextpri, &down);
@@ -408,9 +376,9 @@ int main(int argc, const char* argv[]) {
 					nextpri = SortSpriteMoving(pad->ls_x, pad->ls_y, port, sprt_point_L, tpage, ot[db] + (OT_LEN - 1), nextpri, &point_L);
 					nextpri = SortSprite32(port, pad->btn, sprt_bg_R, tpage, ot[db] + (OT_LEN - 1), nextpri, &bg_R);
 					nextpri = SortSprite32(port, pad->btn, sprt_bg_L, tpage, ot[db] + (OT_LEN - 1), nextpri, &bg_L);
-
+					
+					// Print joystick values. Change range and improve display!
 					FntPrint(font_id[port], "\n\n\n\nLSX %3d\nLSY %3d\nRSX %3d\nRSY %3d", pad->ls_x, pad->ls_y, pad->rs_x, pad->rs_y);
-					// FntPrint(font_id[port], "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 				}
 			}
 
@@ -431,9 +399,6 @@ int main(int argc, const char* argv[]) {
 		
 		/* Alternate to the next buffer */
 		db = !db;
-		
-		/* Increment counter for the snake animation */
-		counter++;
 		
 	}
 		
