@@ -1,36 +1,40 @@
 # PS1MiniPadTest
 
-Hi, this is a small sized, controller tested app, currently is for NTSC-U consoles.
-It has only been tested on emulators and on some real hardware. More tests are required. This software comes with no warranty.
+Hi, this is a small sized, controller tested app, currently is for NTSC consoles.  
+It has only been tested on emulators and on some real hardware. More tests are required.  
+This software comes with no warranty.
 
 ---
 
 ## Screenshots:
 
-![Screenshot 1: Only digital pad in port 0](/screenshots/ss1.png)
+![Screenshot 1: Only digital pad in port 1](/screenshots/ss1.png)
 
-![Screenshot 1: Digital in port 0, analog in port 1](/screenshots/ss2.png)
+![Screenshot 2: Digital in port 1, analog in port 2](/screenshots/ss2.png)
 
-![Screenshot 1: Digital in port 0, analog in port 1, in action](/screenshots/ss3.png)
-
-![Screenshot 1: Only Digital Pad in port 1](/screenshots/ss4.png)
+![Screenshot 3: Only analog in port 2](/screenshots/ss3.png)
 
 ---
 
 ## Features:
-* Fully graphical (with analog joysticks values in decimal for precise readings, 0-255 range).
+* Fully graphical with a clean and simple layout.
 * Works with both Digital and Analog controllers, with support to switch bewteen Analog and Digital modes.
-* It is 32KB compiled (less than the 122KB FreePSXBoot's limit) so it can work without the need to burn a CD or get an ODE. Just need a way the execute FreePSXBoot on your PS1, namely, an original Memory Card, a PS1 MemCardPro, or a cheap Pi Pico with the [PicoMemCard](https://github.com/dangiu/PicoMemcard) firmware, etc.
+* Analog joysticks values are visible in decimal for precise readings, on the [-128,127] range.
+* It is **28KB** compiled (less than the 122KB FreePSXBoot's limit) so it can work without the need to burn a CD or get an ODE. Just need a way the execute FreePSXBoot on your PS1, namely, an original Memory Card, a PS1 MemCardPro, or a cheap Pi Pico with the [PicoMemcard](https://github.com/dangiu/PicoMemcard) firmware, etc.
 * (**Supposedly working after fix. More testing is recommended**) Should work "on the fly". If I disconnect the controller while testing, it should stop displaying it. If I reconnect it, it should display it again.
 
+## Supported controllers:
+* DualDigital
+* Analog Flightstick (more testing needed)
+* DualAnalog (Flightstick mode needs more testing)
+* DualShock (no rumble support yet)
+
 ## To do:
-* Fix weird texture colors (easy, I'm just lazy).
-* Change joysticks ranges from [0,255] to [-128,128]. Also a better display layout.
-* Add support for other regions. At least PAL.
-* Probably fix button presses of the Analog Stick (Not the Analog Pad). However, I don't have one.
+* Add support for PAL.
+* Support for every controller made for the PS1.
+* Probably fix Flightstick button presses. However, I don't own one.
 * Add rumble support.
-* Automatically switch to Analog Mode on Analog Pads.
-* Code rewrite to make it cleaner.
+* Automatically switch to analog Mode on analog pads.
 
 ---
 
@@ -55,3 +59,4 @@ cmake --build ./build
 
 Email: <luisibalaz@gmail.com>  
 Github: <https://www.github.com/luisibalaz>
+Discord: 
