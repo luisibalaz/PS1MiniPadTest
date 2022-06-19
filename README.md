@@ -59,4 +59,3 @@ cmake --build ./build
 
 Email: <luisibalaz@gmail.com>  
 Github: <https://www.github.com/luisibalaz>
-Discord: 
