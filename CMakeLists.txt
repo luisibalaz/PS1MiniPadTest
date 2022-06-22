@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.20)
 project(
 	PS1MiniPadTest
 	LANGUAGES    C ASM
-	VERSION      0.3.1
+	VERSION      0.4
 	DESCRIPTION  "PS1 Mini Pad Tester intended to use with FreePSXBoot"
 	HOMEPAGE_URL "https://github.com/luisibalaz/PS1MiniPadTest"
 )
@@ -17,4 +17,4 @@ psn00bsdk_add_executable(PS1MiniPadTest STATIC ${_sources})
 
 psn00bsdk_target_incbin(PS1MiniPadTest PRIVATE buttons_tim all.tim)
 
-install(FILES ${PROJECT_BINARY_DIR}/PS1MiniPadTest.exe TYPE BIN)
+install(FILES ${PROJECT_BINARY_DIR}/PS1MiniPadTestV0.4.exe TYPE BIN)

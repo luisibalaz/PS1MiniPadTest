@@ -1,6 +1,6 @@
 # PS1MiniPadTest
 
-Hi, this is a small sized, controller tested app, currently is for NTSC consoles.  
+Hi, this is a small sized, controller tester app, currently is for NTSC consoles.  
 It has only been tested on emulators and on some real hardware. More tests are required.  
 This software comes with no warranty.
 
